@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive/hive.dart';
 import 'package:kwamobile/page/loginpage.dart';
 import 'package:kwamobile/page/welcomepage.dart';
 import 'package:sizer/sizer.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 
-void main() {
+Box? datalocal;
+
+void main() async {
+  await WidgetsFlutterBinding.ensureInitialized();
+  await Hive.initFlutter();
+  datalocal = await Hive.openBox('datalocal');
+
   int satu = 0;
   if (satu == 1) {
     runApp(const MyAppLogin());
@@ -13,13 +22,12 @@ void main() {
   }
 }
 
-
 class MyAppLogin extends StatelessWidget {
   const MyAppLogin({super.key});
 
   // This widget is the root of your application.
   @override
- Widget build(BuildContext context) {
+  Widget build(BuildContext context) {
     return Sizer(builder: (context, Orientation, DeviceType) {
       return MaterialApp(
         title: 'Flutter Demo',

@@ -73,6 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 1.5.h,
                           ),
                           TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: norek,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(), // Set border here
@@ -89,6 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 1.5.h,
                           ),
                           TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: nik,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(), // Set border here
@@ -105,6 +107,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 1.5.h,
                           ),
                           TextFormField(
+                            keyboardType: TextInputType.number,
                             controller: nohp,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(), // Set border here

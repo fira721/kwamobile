@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:device_information/device_information.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kwamobile/page/registersukses.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+
+import 'dart:convert';
+import 'package:crypto/crypto.dart';
 
 class KonfirmasiRegister extends StatefulWidget {
   final String nik;
@@ -28,8 +37,156 @@ class KonfirmasiRegister extends StatefulWidget {
 
 class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
   @override
+  List<Map<String, dynamic>> responseData = [];
+  var nasabahCode = '';
+  var nasabahName = '';
+
+  Future<void> get_dataCif(String norek) async {
+    String apiUrl = 'http://ksp-warnaartha.co.id/kwamobile/get_data.php';
+    String code = norek;
+    String token = 'a3402327bd7823c778cee59533a2ceb5';
+    final response =
+        await http.get(Uri.parse('$apiUrl?code=$code&token=$token'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        try {
+          responseData =
+              List<Map<String, dynamic>>.from(json.decode(response.body));
+          nasabahCode = responseData[0]["nasabah_code"];
+          nasabahName = responseData[0]["nasabah_name"];
+
+          print(nasabahCode + 'ini' + nasabahName);
+        } catch (e) {
+          print('get data cif error salah isi paling');
+        }
+      });
+    } else {
+      // Handle error
+      print('Error fetching data: ${response.statusCode}');
+    }
+  }
+
+  String calculateMD5(String input) {
+    // Convert the input string to bytes
+    List<int> inputBytes = utf8.encode(input);
+
+    // Create an MD5 hash
+    Digest md5Hash = md5.convert(inputBytes);
+
+    // Convert the hash to a hex string
+    String md5HashString = md5Hash.toString();
+
+    return md5HashString;
+  }
+
+  bool validasirequest = false;
+
+  Future<void> validasiNik(String cif_, String nik_) async {
+    // Ganti URL API dengan URL yang sesuai
+    final apiUrl = 'http://ksp-warnaartha.co.id/kwamobile/get_checkdata.php';
+
+    // Ganti api_key, cif, dan nik sesuai kebutuhan
+    final apiKey = 'a3402327bd7823c778cee59533a2ceb5';
+    final cif = cif_;
+    final nik = nik_;
+
+    final response = await http.get(
+      Uri.parse('$apiUrl?api_key=$apiKey&cif=$cif&nik=$nik'),
+    );
+
+    if (response.statusCode == 200) {
+      // Parsing respons JSON
+      final responseData = json.decode(response.body);
+
+      // Melakukan sesuatu dengan data yang diterima
+      if (responseData['status'] == 'success') {
+        validasirequest = true;
+        print('Data ditemukan: ${responseData['message']}');
+      } else {
+        print('Data tidak ditemukan: ${responseData['message']}');
+      }
+    } else {
+      // Menangani kesalahan jika respons tidak berhasil (status code bukan 200 OK)
+      print('Error: ${response.statusCode}');
+    }
+  }
+
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+
+  Future<void> getidhp() async {
+    await Hive.initFlutter();
+    var datalocal = await Hive.openBox('datalocal');
+    String deviceModel = '';
+    int apiLevel = 0;
+    String idhp = '';
+    try {
+      deviceModel = await DeviceInformation.deviceModel;
+      idhp = await DeviceInformation.deviceManufacturer;
+      apiLevel = await DeviceInformation.apiLevel;
+    } on PlatformException {
+      deviceModel = 'Failed to get platform version.';
+    }
+
+    String idhptest = deviceModel + idhp + apiLevel.toString();
+
+    await datalocal.put('idhp', idhptest);
+    String datafromhive = datalocal.get('idhp');
+    // deviceModel + idhp + apiLevel.toString();
+  }
+
+  Future<void> registerAccount(
+    String code,
+    String name,
+    String nik,
+    String noHp,
+    String username,
+    String password,
+    String token,
+    String isFirstTime,
+    String idHp,
+  ) async {
+    final String apiUrl =
+        "http://ksp-warnaartha.co.id/kwamobile/post_registeruser.php";
+    final String apiKey = "a3402327bd7823c778cee59533a2ceb5";
+
+    final Dio dio = Dio();
+
+    final FormData formData = FormData.fromMap({
+      "api_key":
+          'a3402327bd7823c778cee59533a2ceb5', // Add the API key to the FormData
+      "code": code,
+      "name": name,
+      "nik": nik,
+      "no_hp": noHp,
+      "username": username,
+      "password": password,
+      "token": token,
+      "is_firsttime": isFirstTime,
+      "id_hp": idHp,
+    });
+
+    try {
+      final Response response = await dio.post(
+        apiUrl,
+        data: formData,
+        options: Options(
+          contentType: Headers.formUrlEncodedContentType,
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = response.data;
+        print("ok");
+      } else {
+        print("");
+      }
+    } catch (e) {
+      print("");
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,
@@ -134,31 +291,67 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                             ),
                             ElevatedButton(
                               onPressed: () async {
-                                String deviceModel = '';
-
                                 try {
-                                  deviceModel =
-                                      await DeviceInformation.deviceModel;
+                                  EasyLoading.show();
+                                  await getidhp();
+                                  var datalocal =
+                                      await Hive.openBox('datalocal');
+                                  String idhp = datalocal.get('idhp');
+                                  String username =
+                                      calculateMD5(widget.username);
+                                  String password =
+                                      calculateMD5(widget.password);
+                                  String norek = widget.norek;
 
-                                  // imeiNo =
-                                  //     await DeviceInformation.deviceIMEINumber;
-                                  // modelName =
-                                  //     await DeviceInformation.deviceModel;
-                                  // manufacturer = await DeviceInformation
-                                  //     .deviceManufacturer;
-                                  // apiLevel = await DeviceInformation.apiLevel;
-                                  // deviceName =
-                                  //     await DeviceInformation.deviceName;
-                                  // productName =
-                                  //     await DeviceInformation.productName;
-                                  // cpuType = await DeviceInformation.cpuName;
-                                  // hardware = await DeviceInformation.hardware;
-                                } on PlatformException {
-                                  deviceModel =
-                                      'Failed to get platform version.';
-                                }
+                                  String nik = widget.nik;
+                                  String nohp = widget.nohp;
+                                  String token = calculateMD5(nasabahCode +
+                                      nik +
+                                      'Kspkwa@))*Bidexh27@))*Kspksph27@))*');
+                                  await get_dataCif(norek);
 
-                                print(deviceModel);
+                                  await validasiNik(nasabahCode, nik);
+
+                                  if (validasirequest == true) {
+                                    try {
+                                      await registerAccount(
+                                          nasabahCode.toString(),
+                                          nasabahName.toString(),
+                                          nik.toString(),
+                                          nohp.toString(),
+                                          username.toString(),
+                                          password.toString(),
+                                          token.toString(),
+                                          '1',
+                                          idhp.toString());
+                                      await Hive.initFlutter();
+                                      var datalocal =
+                                          await Hive.openBox('datalocal');
+
+                                      datalocal.put('idhp', idhp.toString());
+                                      datalocal.put(
+                                          'cif', nasabahCode.toString());
+                                      datalocal.put('token', token.toString());
+
+                                      EasyLoading.dismiss();
+
+                                      Navigator.pushAndRemoveUntil(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  RegisterSukses()),
+                                          (route) => false);
+                                    } catch (e) {
+                                      EasyLoading.showError(
+                                          ' INI ERROR ${e.toString()}');
+                                      EasyLoading.dismiss();
+                                    }
+                                  } else {
+                                    EasyLoading.showError(
+                                        'Data No Rekening tabugnan atau nik tidak sesuai');
+                                    EasyLoading.dismiss();
+                                  }
+                                } catch (e) {}
                               },
                               child: Text('Daftar'),
                               style: ElevatedButton.styleFrom(
