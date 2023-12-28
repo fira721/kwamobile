@@ -13,13 +13,7 @@ void main() async {
   await WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   datalocal = await Hive.openBox('datalocal');
-
-  int satu = 0;
-  if (satu == 1) {
-    runApp(const MyAppLogin());
-  } else {
-    runApp(const MyAppWelcome());
-  }
+  runApp(const MyAppLogin());
 }
 
 class MyAppLogin extends StatelessWidget {

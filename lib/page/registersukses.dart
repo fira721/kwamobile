@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:kwamobile/page/loginpage.dart';
 import 'package:sizer/sizer.dart';
 
 class RegisterSukses extends StatefulWidget {
@@ -24,7 +25,6 @@ class _RegisterSuksesState extends State<RegisterSukses> {
     String id = datalocal.get('idhp');
     String cif = datalocal.get('cif');
     String token = datalocal.get('token');
-
     print(id + cif + token);
   }
 
@@ -76,8 +76,20 @@ class _RegisterSuksesState extends State<RegisterSukses> {
                       children: [
                         Text(
                           'Pendaftaran sudah berhasil anda sudah bisa menggunakan KWA Mobile',
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 16),
                         ),
+                        SizedBox(
+                          height: 3.h,
+                        ),
+                        ElevatedButton(
+                            onPressed: () {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                  (route) => false);
+                            },
+                            child: Text('Login')),
                       ]),
                 ),
               ]),
