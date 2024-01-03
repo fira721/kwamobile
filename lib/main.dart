@@ -6,6 +6,7 @@ import 'package:kwamobile/page/welcomepage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 Box? datalocal;
 
@@ -24,6 +25,13 @@ class MyAppLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Sizer(builder: (context, Orientation, DeviceType) {
       return MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('id'), // Ganti dengan kode bahasa yang diinginkan
+        ],
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,

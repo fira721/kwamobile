@@ -118,7 +118,7 @@ class _ListPageState extends State<ListPage> {
                               MaterialPageRoute(
                                   builder: (context) => DatePickerDate(
                                         nomorrekening: item['code'],
-                                        token: '',
+                                        token: token,
                                       )));
                         },
                         child: Text(

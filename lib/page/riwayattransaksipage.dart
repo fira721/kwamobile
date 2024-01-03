@@ -10,21 +10,29 @@ class Transaction {
   final String paketke;
   final String total;
   final String transDate;
+  final String code;
 
-  Transaction(this.nominal, this.paketke, this.total, this.transDate);
+  Transaction(
+      this.nominal, this.paketke, this.total, this.transDate, this.code);
 
   factory Transaction.fromJson(Map<String, dynamic> json) {
-    return Transaction(
-      json['nominal'],
-      json['paketke'],
-      json['total'],
-      json['trans_date'],
-    );
+    return Transaction(json['nominal'], json['paketke'], json['total'],
+        json['trans_date'], json['code']);
   }
 }
 
 class RiwayatTransaksiPage extends StatefulWidget {
-  const RiwayatTransaksiPage({super.key});
+  const RiwayatTransaksiPage(
+      {super.key,
+      required this.startdate,
+      required this.enddate,
+      required this.norek,
+      required this.token});
+
+  final String startdate;
+  final String enddate;
+  final String norek;
+  final String token;
 
   @override
   State<RiwayatTransaksiPage> createState() => _RiwayatTransaksiPageState();
@@ -32,38 +40,10 @@ class RiwayatTransaksiPage extends StatefulWidget {
 
 class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
   @override
-  void initState() {
-    getdata();
-    super.initState();
-  }
-
-  bool munculregister = true;
-  String token = '';
-  void getdata() async {
-    await Hive.initFlutter();
-    var datalocal = await Hive.openBox('datalocal');
-
-    try {
-      token = datalocal.get('token');
-    } catch (e) {
-      munculregister = false;
-      print(e);
-    }
-
-    if (token == null) {
-      munculregister = false;
-
-      setState(() {});
-    }
-    setState(() {});
-
-    print(token);
-  }
-
-  final String apiUrl =
-      'http://ksp-warnaartha.co.id/kwamobile/get_transaksidata.php?token=1&tabungan_code=005.111.0000651&start_date=2023-12-20 00:00:00&end_date=2024-01-02 23:00:00';
-
   Future<List<Transaction>> fetchTransactions() async {
+    final String apiUrl =
+        'http://ksp-warnaartha.co.id/kwamobile/get_transaksidata.php?token=${widget.token}&tabungan_code=${widget.norek}&start_date=${widget.startdate} 00:00:00&end_date=${widget.enddate} 23:00:00';
+
     final response = await Dio().get(apiUrl);
 
     if (response.statusCode == 200) {
@@ -98,7 +78,11 @@ class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text('KWA Mobile'),
+        iconTheme: IconThemeData(color: Colors.white),
+        title: Text(
+          'KWA Mobile',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: Column(
         children: [
@@ -111,11 +95,19 @@ class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
               'Riwayat Transaksi',
               style: TextStyle(
                 fontSize: 18,
+                color: Colors.green,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
-          Text('data'),
+          Text(
+            'No Rekening : ${widget.norek}',
+            style: TextStyle(fontSize: 11),
+          ),
+           Text(
+            'Periode : ${widget.startdate} - ${widget.enddate}',
+            style: TextStyle(fontSize: 11),
+          ),
           SizedBox(
             height: 1.5.h,
           ),
@@ -132,16 +124,27 @@ class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
                   return ListView.builder(
                     itemCount: transactions!.length,
                     itemBuilder: (context, index) {
+                      // Add 1 to index because index is zero-based
+                      int sequentialNumber = index + 1;
                       return ListTile(
                         title: Text('${transactions[index].transDate}'),
-                        subtitle:
-                            Text('Paket Ke: ${transactions[index].paketke}\n'
-                                'Total: ${transactions[index].total}\n'),
+
+                        subtitle: Text(
+                          'Paket Ke       : ${transactions[index].paketke}\n'
+                          'Total             : ${transactions[index].total}\n'
+                          'Id Transaksi : ${transactions[index].code}\n',
+                          style: TextStyle(fontSize: 10),
+                        ),
                         trailing: Text(
                           formatCurrency(transactions[index].nominal),
                           style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.green),
+                            fontWeight: FontWeight.bold,
+                            color: Colors.green,
+                            fontSize: 16,
+                          ),
                         ),
+                        // Display the sequential number
+                        leading: Text('$sequentialNumber'),
                       );
                     },
                   );
