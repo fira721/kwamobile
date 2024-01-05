@@ -227,7 +227,7 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 36.h,
+                  height: 38.h,
                   padding: EdgeInsets.all(15),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -282,7 +282,10 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('Kembali'),
+                              child: Text(
+                                'Kembali',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.orange),
                             ),
@@ -353,7 +356,10 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                                   }
                                 } catch (e) {}
                               },
-                              child: Text('Daftar'),
+                              child: Text(
+                                'Daftar',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green),
                             ),

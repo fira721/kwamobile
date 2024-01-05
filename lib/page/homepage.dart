@@ -1,7 +1,11 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwamobile/page/listpage.dart';
+import 'package:kwamobile/page/pengajuanpage.dart';
+import 'package:kwamobile/page/registerpage2.dart';
 import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
 
@@ -42,11 +46,28 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
+  void initState() {
+    // TODO: implement initState
+    getdata();
+    super.initState();
+  }
   // late List<String> imgList;
 
   // late List<Widget> imageSliders;
-  void initState() {
-    super.initState();
+
+  String token = '';
+  String cif = '';
+  void getdata() async {
+    EasyLoading.show();
+    await Hive.initFlutter();
+    var datalocal = await Hive.openBox('datalocal');
+    // String id = datalocal.get('idhp');
+    token = '';
+    cif = datalocal.get('cif');
+    token = datalocal.get('token');
+    print(token);
+    print(cif);
+    EasyLoading.dismiss();
   }
 
   final List<Widget> imageSliders = imgList
@@ -160,19 +181,6 @@ class _HomePageState extends State<HomePage> {
                     child: Icon(Icons.person, color: Colors.green, size: 25.sp),
                     // Isi kontainer Anda di sini
                   ),
-
-                  // Container(
-                  //   width: 53.85,
-                  //   height: 60.73,
-                  //   decoration: BoxDecoration(
-                  //     image: DecorationImage(
-                  //       image:
-                  //           NetworkImage("https://via.placeholder.com/54x61"),
-                  //       fit: BoxFit.fill,
-                  //     ),
-                  //     border: Border.all(width: 1),
-                  //   ),
-                  // ),
                   SizedBox(
                     width: 2.w,
                   ),
@@ -236,8 +244,9 @@ class _HomePageState extends State<HomePage> {
                     context,
                     MaterialPageRoute(
                       builder: (context) => ListPage(
-                        nasabahCode: '001.0004474',
-                        token: 'a3402327bd7823c778cee59533a2ceb5',
+                        nasabahCode: cif,
+                        token:
+                            'a3402327bd7823c778cee59533a2ceb5', // ini token khusus
                       ),
                     ),
                   );
@@ -246,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                   padding: EdgeInsets.all(8),
                   child: Row(children: [
                     Text(
-                      'Cek Transaksi Tabungan',
+                      'Cek Transaksi',
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.green,
@@ -284,50 +293,12 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.centerLeft,
             child: Column(children: [
               InkWell(
-                onTap: () {},
-                child: Container(
-                  padding: EdgeInsets.all(8),
-                  child: Row(children: [
-                    Text(
-                      'Cek Transaksi Pinjaman',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.green,
-                          fontSize: 12.sp),
-                    )
-                  ]),
-                  width: 55.w,
-                  height: 6.7.h,
-                  decoration: ShapeDecoration(
-                    color: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(
-                        color: Colors.green, // Ganti warna sesuai kebutuhan
-                        width: 3.0, // Ganti ketebalan sesuai kebutuhan
-                      ),
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    shadows: [
-                      BoxShadow(
-                        color: Color(0x3F000000),
-                        blurRadius: 4,
-                        offset: Offset(0, 4),
-                        spreadRadius: 0,
-                      )
-                    ],
-                  ),
-                ),
-              )
-            ]),
-          ),
-          SizedBox(
-            height: 2.h,
-          ),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: Column(children: [
-              InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PengajuanOnline()));
+                },
                 child: Container(
                   padding: EdgeInsets.all(8),
                   child: Row(children: [

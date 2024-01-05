@@ -222,6 +222,10 @@ class _LoginPageState extends State<LoginPage> {
                               height: 1.h,
                             ),
                             TextFormField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r'\s')), // Mengabaikan spasi
+                              ],
                               controller: usernameController,
                               decoration: InputDecoration(
                                 fillColor: Colors.white,
@@ -243,6 +247,10 @@ class _LoginPageState extends State<LoginPage> {
                               height: 1.h,
                             ),
                             TextFormField(
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r'\s')), // Mengabaikan spasi
+                              ],
                               controller: passwordController,
                               obscureText: true,
                               // maxLength: 10,

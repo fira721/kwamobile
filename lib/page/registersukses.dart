@@ -89,7 +89,8 @@ class _RegisterSuksesState extends State<RegisterSukses> {
                                       builder: (context) => LoginPage()),
                                   (route) => false);
                             },
-                            child: Text('Login')),
+                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                            child: Text('Login', style: TextStyle(color: Colors.white),)),
                       ]),
                 ),
               ]),

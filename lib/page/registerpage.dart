@@ -58,7 +58,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 50.h,
+                  height: 51.5.h,
                   padding: EdgeInsets.all(15),
                   child: Form(
                     child: Column(
@@ -66,7 +66,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nomor Anggota/rekening tabungan :',
+                            'Nomor rekening tabungan :',
                             style: TextStyle(fontSize: 15),
                           ),
                           SizedBox(
@@ -122,7 +122,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 onPressed: () {
                                   Navigator.pop(context);
                                 },
-                                child: Text('Kembali'),
+                                child: Text(
+                                  'Kembali',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.orange),
                               ),
@@ -155,7 +158,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                     EasyLoading.showError(pesanerror);
                                   }
                                 },
-                                child: Text('Selanjutnya'),
+                                child: Text(
+                                  'Selanjutnya',
+                                  style: TextStyle(color: Colors.white),
+                                ),
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green),
                               ),

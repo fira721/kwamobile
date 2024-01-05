@@ -54,6 +54,8 @@ class MyAppWelcome extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          primaryColor: Colors.blue,
+          
         ),
         home: const WelcomePage(),
         builder: EasyLoading.init(),

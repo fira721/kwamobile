@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -61,7 +62,7 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 36.h,
+                  height: 40.h,
                   padding: EdgeInsets.all(15),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -75,6 +76,10 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                           height: 1.5.h,
                         ),
                         TextFormField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(
+                                RegExp(r'\s')), // Mengabaikan spasi
+                          ],
                           controller: username,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(), // Set border here
@@ -91,6 +96,10 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                           height: 1.5.h,
                         ),
                         TextFormField(
+                          inputFormatters: [
+                            FilteringTextInputFormatter.deny(
+                                RegExp(r'\s')), // Mengabaikan spasi
+                          ],
                           controller: password,
                           // obscureText: true,
                           // maxLength: 10,
@@ -107,7 +116,10 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('Kembali'),
+                              child: Text(
+                                'Kembali',
+                                style: TextStyle(color: Colors.white),
+                              ),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.orange),
                             ),
@@ -123,19 +135,29 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                                 String nohp = widget.nohp;
                                 String norek = widget.norek;
 
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            KonfirmasiRegister(
-                                              username: username_,
-                                              password: password_,
-                                              norek: norek,
-                                              nohp: nohp,
-                                              nik: nik,
-                                            )));
+                                String pesanerror = '';
+                                if (username_.isEmpty || password_.isEmpty) {
+                                  pesanerror = 'ada data yang belum di isi';
+                                }
+
+                                if (pesanerror == '') {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              KonfirmasiRegister(
+                                                username: username_,
+                                                password: password_,
+                                                norek: norek,
+                                                nohp: nohp,
+                                                nik: nik,
+                                              )));
+                                } else {
+                                  EasyLoading.showError(pesanerror);
+                                }
                               },
-                              child: Text('Selanjutnya'),
+                              child: Text('Selanjutnya',
+                                  style: TextStyle(color: Colors.white)),
                               style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.green),
                             ),

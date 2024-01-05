@@ -76,6 +76,7 @@ class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.green,
         iconTheme: IconThemeData(color: Colors.white),
@@ -84,75 +85,81 @@ class _RiwayatTransaksiPageState extends State<RiwayatTransaksiPage> {
           style: TextStyle(color: Colors.white),
         ),
       ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 2.5.h,
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(8, 8, 8, 2),
-            child: Text(
-              'Riwayat Transaksi',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.green,
-                fontWeight: FontWeight.bold,
+      body: Padding(
+        padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+        child: Container(
+          color: Colors.white,
+          child: Column(
+            children: [
+              SizedBox(
+                height: 2.5.h,
               ),
-            ),
-          ),
-          Text(
-            'No Rekening : ${widget.norek}',
-            style: TextStyle(fontSize: 11),
-          ),
-           Text(
-            'Periode : ${widget.startdate} - ${widget.enddate}',
-            style: TextStyle(fontSize: 11),
-          ),
-          SizedBox(
-            height: 1.5.h,
-          ),
-          Expanded(
-            child: FutureBuilder(
-              future: fetchTransactions(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  List<Transaction>? transactions = snapshot.data;
-                  return ListView.builder(
-                    itemCount: transactions!.length,
-                    itemBuilder: (context, index) {
-                      // Add 1 to index because index is zero-based
-                      int sequentialNumber = index + 1;
-                      return ListTile(
-                        title: Text('${transactions[index].transDate}'),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(8, 8, 8, 2),
+                child: Text(
+                  'Riwayat Transaksi',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+              Text(
+                'No Rekening : ${widget.norek}',
+                style: TextStyle(fontSize: 11),
+              ),
+              Text(
+                'Periode : ${widget.startdate} - ${widget.enddate}',
+                style: TextStyle(fontSize: 11),
+              ),
+              SizedBox(
+                height: 1.5.h,
+              ),
+              Expanded(
+                child: FutureBuilder(
+                  future: fetchTransactions(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Text('Error: ${snapshot.error}');
+                    } else {
+                      List<Transaction>? transactions = snapshot.data;
+                      return ListView.builder(
+                        itemCount: transactions!.length,
+                        itemBuilder: (context, index) {
+                          // Add 1 to index because index is zero-based
+                          int sequentialNumber = index + 1;
+                          return ListTile(
+                            title: Text('${transactions[index].transDate}'),
 
-                        subtitle: Text(
-                          'Paket Ke       : ${transactions[index].paketke}\n'
-                          'Total             : ${transactions[index].total}\n'
-                          'Id Transaksi : ${transactions[index].code}\n',
-                          style: TextStyle(fontSize: 10),
-                        ),
-                        trailing: Text(
-                          formatCurrency(transactions[index].nominal),
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.green,
-                            fontSize: 16,
-                          ),
-                        ),
-                        // Display the sequential number
-                        leading: Text('$sequentialNumber'),
+                            subtitle: Text(
+                              'Paket Ke       : ${transactions[index].paketke}\n'
+                              'Total             : ${transactions[index].total}\n'
+                              'Id Transaksi : ${transactions[index].code}\n',
+                              style: TextStyle(fontSize: 10),
+                            ),
+                            trailing: Text(
+                              formatCurrency(transactions[index].nominal),
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.green,
+                                fontSize: 16,
+                              ),
+                            ),
+                            // Display the sequential number
+                            leading: Text('$sequentialNumber'),
+                          );
+                        },
                       );
-                    },
-                  );
-                }
-              },
-            ),
+                    }
+                  },
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
