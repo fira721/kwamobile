@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:kwamobile/page/registerpage2.dart';
 import 'package:sizer/sizer.dart';
+import 'package:http/http.dart' as http;
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -13,6 +16,61 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
+  bool dataAkun = false;
+
+  Future<Map<String, dynamic>> getUserData(String nik, String tokenApi,
+      String nik_, String nohp_, String norek_) async {
+    final String apiUrl =
+        "http://ksp-warnaartha.co.id/kwamobile/get_checkuserdata.php";
+
+    try {
+      final response =
+          await http.get(Uri.parse('$apiUrl?nik=$nik&token_api=$tokenApi'));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> data = json.decode(response.body);
+
+        if (data['status'] == 'success' && data['message'] == 'data:ada') {
+          print('ada');
+          dataAkun = true;
+          // Proses data jika ditemukan
+
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => RegisterPage2(
+                        nik: nik_,
+                        nohp: nohp_,
+                        norek: norek_,
+                      )));
+          return {'success': true, 'data': data};
+        } else {
+          dataAkun = false;
+          print('tidak ada');
+          // Handle situasi jika status tidak sesuai atau pesan tidak sesuai
+          return {'success': false, 'data': data};
+        }
+      } else {
+        dataAkun = false;
+        print('error');
+        // Handle jika responsenya bukan 200 OK
+        return {
+          'success': false,
+          'data': {
+            'status': 'error',
+            'message': 'HTTP Error ${response.statusCode}'
+          }
+        };
+      }
+    } catch (e) {
+      // Handle jika terjadi kesalahan lainnya
+      return {
+        'success': false,
+        'data': {'status': 'error', 'message': '$e'}
+      };
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     TextEditingController norek = TextEditingController();
@@ -58,7 +116,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 51.5.h,
+                  // height: 51.5.h,
                   padding: EdgeInsets.all(15),
                   child: Form(
                     child: Column(
@@ -66,7 +124,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Nomor rekening tabungan :',
+                            'Nomor rekening di KSP Warna Artha :',
                             style: TextStyle(fontSize: 15),
                           ),
                           SizedBox(
@@ -133,7 +191,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 width: 5.w,
                               ),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   String norek_ = norek.text;
                                   String nik_ = nik.text;
                                   String nohp_ = nohp.text;
@@ -144,16 +202,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                       nohp_.isEmpty) {
                                     pesanerror = 'ada data yang belum di isi';
                                   }
+                                  // await getUserData(
+                                  //     nik_, 'a3402327bd7823c778cee59533a2ceb5');
 
                                   if (pesanerror == '') {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => RegisterPage2(
-                                                  nik: nik_,
-                                                  nohp: nohp_,
-                                                  norek: norek_,
-                                                )));
+                                    await getUserData(
+                                        nik_,
+                                        'a3402327bd7823c778cee59533a2ceb5',
+                                        nik_,
+                                        nohp_,
+                                        norek_);
                                   } else {
                                     EasyLoading.showError(pesanerror);
                                   }
@@ -165,8 +223,20 @@ class _RegisterPageState extends State<RegisterPage> {
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green),
                               ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    // await getUserData('3671123009860002',
+                                    //     'a3402327bd7823c778cee59533a2ceb5');
+                                  },
+                                  child: Text('test')),
                             ],
-                          )
+                          ),
+                          ElevatedButton(
+                              onPressed: () async {
+                                // await getUserData('3671123009860s002',
+                                //     'a3402327bd7823c778cee59533a2ceb5');
+                              },
+                              child: Text('tesss'))
                         ]),
                   ),
                 ),

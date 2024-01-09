@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kwamobile/page/konfirmasipengajuan.dart';
 import 'package:sizer/sizer.dart';
@@ -15,6 +18,55 @@ class PengajuanLoanJaminan extends StatefulWidget {
 }
 
 class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
+  Future<void> postPengajuanData(
+    String apiToken,
+    String nama,
+    String cif,
+    String jenisPinjaman,
+    int nominal,
+    String tujuan,
+    String jenisJaminan,
+    String keteranganJaminan,
+    String pekerjaan,
+    String nohp,
+    String cabang,
+  ) async {
+    final String apiUrl =
+        'http://ksp-warnaartha.co.id/kwamobile/post_pengajuan.php'; // Update the URL with your actual API endpoint
+
+    try {
+      final http.Response response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: <String, String>{
+          'api_token': apiToken,
+          'nama': nama,
+          'cif': cif,
+          'jenis_pinjaman': jenisPinjaman,
+          'nominal': nominal.toString(),
+          'tujuan': tujuan,
+          'jenis_jaminan': jenisJaminan,
+          'keterangan_jaminan': keteranganJaminan,
+          'pekerjaan': pekerjaan,
+          'nohp': nohp,
+          'cabang': cabang, // New parameter
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        print(responseData);
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+        print('Response body: ${response.body}');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
+
   double _value = 0.0;
 
   String valuejaminan = 'Sertifikat Tanah/Bangunan';
@@ -219,7 +271,19 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
                       Container(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
-                          onPressed: () {
+                          onPressed: () async {
+                            await postPengajuanData(
+                                "a3402327bd7823c778cee59533a2ceb5",
+                                "John Doe",
+                                "12345",
+                                'KWA',
+                                10000,
+                                "Business",
+                                "Gold",
+                                "Description of Jaminan",
+                                "Engineer",
+                                "1234567890",
+                                "Cabang");
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(

@@ -112,6 +112,9 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
     }
   }
 
+  bool _isObscure = false;
+  bool _isObscure2 = false;
+
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
 
@@ -227,7 +230,7 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 38.h,
+                 
                   padding: EdgeInsets.all(15),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -241,20 +244,32 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                         SizedBox(
                           height: 2.h,
                         ),
-                        Text(
-                          'Username                        : ${widget.username}',
-                          style: TextStyle(fontSize: 15),
+                        Row(
+                          children: [
+                            _isObscure2
+                                ? Text(
+                                    'Pin                                   : ${widget.username}',
+                                    style: TextStyle(fontSize: 15),
+                                  )
+                                : Text(
+                                    'Pin                                   : ******',
+                                    style: TextStyle(fontSize: 15),
+                                  ),
+                            IconButton(
+                                icon: Icon(_isObscure2
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure2 = !_isObscure2;
+                                  });
+                                }),
+                          ],
                         ),
-                        SizedBox(
-                          height: 1.5.h,
-                        ),
-                        Text(
-                          'Password                        : ${widget.password}',
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        SizedBox(
-                          height: 1.5.h,
-                        ),
+                   
+                        // SizedBox(
+                        //   height: 1.5.h,
+                        // ),
                         Text(
                           'No. Anggota/tabungan : ${widget.norek}',
                           style: TextStyle(fontSize: 15),
@@ -300,10 +315,10 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                                   var datalocal =
                                       await Hive.openBox('datalocal');
                                   String idhp = datalocal.get('idhp');
-                                  String username =
-                                      calculateMD5(widget.username);
-                                  String password =
-                                      calculateMD5(widget.password);
+                                  String username = calculateMD5(
+                                      'Pinh27@))*${widget.username}');
+                                  String password = calculateMD5(
+                                      'Pinh27@))*${widget.username}');
                                   String norek = widget.norek;
 
                                   String nik = widget.nik;

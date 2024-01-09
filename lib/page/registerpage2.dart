@@ -22,6 +22,9 @@ class _RegisterPageState2 extends State<RegisterPage2> {
   @override
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
+  bool _isObscure = true;
+  bool _isObscure2 = true;
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.green,
@@ -62,26 +65,45 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                       )),
                   alignment: Alignment.topLeft,
                   width: 90.w,
-                  height: 40.h,
+                  // height: 40.h,
                   padding: EdgeInsets.all(15),
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Username :',
+                          'Buatlah Pin anda',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 1.h,
+                        ),
+                        Text(
+                          'Pin :',
                           style: TextStyle(fontSize: 15),
                         ),
                         SizedBox(
                           height: 1.5.h,
                         ),
                         TextFormField(
+                          maxLength: 6,
+                          obscureText: _isObscure,
+                          keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(
                                 RegExp(r'\s')), // Mengabaikan spasi
                           ],
                           controller: username,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                icon: Icon(_isObscure
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure = !_isObscure;
+                                  });
+                                }),
                             border: OutlineInputBorder(), // Set border here
                           ),
                         ),
@@ -89,13 +111,16 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                           height: 1.5.h,
                         ),
                         Text(
-                          'Password :',
+                          'Masukan Pin Kembali :',
                           style: TextStyle(fontSize: 15),
                         ),
                         SizedBox(
                           height: 1.5.h,
                         ),
                         TextFormField(
+                          maxLength: 6,
+                          obscureText: _isObscure2,
+                          keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(
                                 RegExp(r'\s')), // Mengabaikan spasi
@@ -104,6 +129,15 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                           // obscureText: true,
                           // maxLength: 10,
                           decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                                icon: Icon(_isObscure2
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure2 = !_isObscure2;
+                                  });
+                                }),
                             border: OutlineInputBorder(), // Set border here
                           ),
                         ),
@@ -141,17 +175,22 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                                 }
 
                                 if (pesanerror == '') {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              KonfirmasiRegister(
-                                                username: username_,
-                                                password: password_,
-                                                norek: norek,
-                                                nohp: nohp,
-                                                nik: nik,
-                                              )));
+                                  if (username.text != password.text) {
+                                    EasyLoading.showError(
+                                        'Pin tidak sama, pastikan pin yang kamu buat sama');
+                                  } else {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                KonfirmasiRegister(
+                                                  username: username_,
+                                                  password: password_,
+                                                  norek: norek,
+                                                  nohp: nohp,
+                                                  nik: nik,
+                                                )));
+                                  }
                                 } else {
                                   EasyLoading.showError(pesanerror);
                                 }

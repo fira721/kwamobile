@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
 import 'package:kwamobile/page/loginpage.dart';
+import 'package:kwamobile/page/loginpage2.dart';
 import 'package:kwamobile/page/welcomepage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:hive/hive.dart';
@@ -28,6 +29,7 @@ class MyAppLogin extends StatelessWidget {
         localizationsDelegates: [
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: [
           const Locale('id'), // Ganti dengan kode bahasa yang diinginkan
@@ -36,30 +38,10 @@ class MyAppLogin extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: const LoginPage(),
+        home: const LoginPage2(),
         builder: EasyLoading.init(),
       );
     });
   }
 }
 
-class MyAppWelcome extends StatelessWidget {
-  const MyAppWelcome({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return Sizer(builder: (context, Orientation, DeviceType) {
-      return MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          primaryColor: Colors.blue,
-          
-        ),
-        home: const WelcomePage(),
-        builder: EasyLoading.init(),
-      );
-    });
-  }
-}
