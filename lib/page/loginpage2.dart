@@ -8,6 +8,7 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwamobile/page/homepage.dart';
 import 'package:kwamobile/page/infopage.dart';
+import 'package:kwamobile/page/offlinepage.dart';
 import 'package:kwamobile/page/registerpage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:flutter/services.dart';
@@ -30,6 +31,15 @@ class _LoginPage2State extends State<LoginPage2> {
 
   bool munculregister = true;
 
+  Future<bool> checkInternetConnection() async {
+    try {
+      final response = await http.get(Uri.parse("https://www.google.com"));
+      return response.statusCode == 200;
+    } catch (e) {
+      return false;
+    }
+  }
+
   String calculateMD5(String input) {
     // Convert the input string to bytes
     List<int> inputBytes = utf8.encode(input);
@@ -43,6 +53,7 @@ class _LoginPage2State extends State<LoginPage2> {
     return md5HashString;
   }
 
+  String code = '';
   void getdata() async {
     EasyLoading.show();
     await Hive.initFlutter();
@@ -50,6 +61,7 @@ class _LoginPage2State extends State<LoginPage2> {
     // String id = datalocal.get('idhp');
     // String cif = datalocal.get('cif')\
     try {
+      code = datalocal.get('cif');
       token = datalocal.get('token');
       print(token);
     } catch (e) {
@@ -65,6 +77,36 @@ class _LoginPage2State extends State<LoginPage2> {
     setState(() {});
     EasyLoading.dismiss();
     print(token);
+  }
+
+  String? nik = '';
+  Future<String?> getData(String token, String code) async {
+    var url = Uri.parse(
+        'http://ksp-warnaartha.co.id/kwamobile/get_aktif.php?token=$token&code=$code');
+
+    try {
+      var response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        var jsonData = jsonDecode(response.body);
+
+        // Menangani kasus jika nilai 'nik' adalah tipe data 'int'
+        if (jsonData is Map<String, dynamic>) {
+          return jsonData['nik'].toString();
+        } else if (jsonData is int) {
+          return jsonData.toString();
+        } else {
+          print('Format data tidak valid.');
+          return null;
+        }
+      } else {
+        print('Gagal mendapatkan data. Status code: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Terjadi kesalahan: $e');
+      return null;
+    }
   }
 
   TextEditingController usernameController = TextEditingController();
@@ -116,8 +158,19 @@ class _LoginPage2State extends State<LoginPage2> {
   }
 
   @override
-  void initState() {
+  void initState() async {
+    bool isConnected = await checkInternetConnection();
+
+    if (isConnected) {
+      print('Internet connection is available.');
+    } else {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => OfflinePage()),
+          (route) => false);
+    }
     getdata();
+
     super.initState();
   }
 
@@ -265,22 +318,42 @@ class _LoginPage2State extends State<LoginPage2> {
                             SizedBox(
                               height: 1.2.h,
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                loginUser();
-                              },
-                              child: Text('Masuk'),
-                              style: ElevatedButton.styleFrom(
-                                  elevation: 8,
-                                  textStyle: TextStyle(
-                                    // Atur ukuran teks di sini
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 20.sp,
-                                  ),
-                                  // Atur warna latar belakang di sini
-                                  backgroundColor: Colors.white,
-                                  // Atur warna teks (opsional)
-                                  foregroundColor: Colors.green),
+                            Row(
+                              children: [
+                                ElevatedButton(
+                                  onPressed: () {
+                                    loginUser();
+                                  },
+                                  child: Text('Masuk'),
+                                  style: ElevatedButton.styleFrom(
+                                      elevation: 8,
+                                      textStyle: TextStyle(
+                                        // Atur ukuran teks di sini
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 20.sp,
+                                      ),
+                                      // Atur warna latar belakang di sini
+                                      backgroundColor: Colors.white,
+                                      // Atur warna teks (opsional)
+                                      foregroundColor: Colors.green),
+                                ),
+                                TextButton(
+                                    onPressed: () async {
+                                      nik = await getData(token, code);
+                                      if (nik != null) {
+                                        print('data1'); // nothing tetap login
+                                      } else {
+                                        print(
+                                            'data2'); // jika data dua null daftar baru dan
+                                      }
+                                      print(nik);
+                                    },
+                                    child: Text(
+                                      'Lupa Password?',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 10),
+                                    ))
+                              ],
                             ),
                           ]),
                     ),
@@ -305,64 +378,6 @@ class _LoginPage2State extends State<LoginPage2> {
                           // Atur warna teks (opsional)
                           foregroundColor: Colors.green),
                     ),
-                  ElevatedButton(
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: Text('Login'),
-                              content: Container(
-                                height: 10.h,
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'Masukan Pin :',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    SizedBox(
-                                      height: 1.h,
-                                    ),
-                                    Container(
-                                      height: 5.h,
-                                      child: TextFormField(
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.deny(
-                                              RegExp(
-                                                  r'\s')), // Mengabaikan spasi
-                                        ],
-                                        controller: usernameController,
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true, // dont forget
-                                          border:
-                                              OutlineInputBorder(), // Set border here
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: <Widget>[
-                                ElevatedButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.green),
-                                )
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Text('login'))
                 ]),
           ),
         ],

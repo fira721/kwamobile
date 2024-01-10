@@ -23,7 +23,14 @@ class _RegisterPageState2 extends State<RegisterPage2> {
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
   bool _isObscure = true;
-  bool _isObscure2 = true;
+  bool _isObscure2 = false;
+
+  
+
+  bool containsNumber(String input) {
+    // Mengecek apakah terdapat angka dalam string menggunakan regex
+    return RegExp(r'\d').hasMatch(input);
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,38 +79,26 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Buatlah Pin anda',
+                          'Buatlah Username dan Password akun anda :',
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                         SizedBox(
                           height: 1.h,
                         ),
                         Text(
-                          'Pin :',
+                          'Username :',
                           style: TextStyle(fontSize: 15),
                         ),
                         SizedBox(
                           height: 1.5.h,
                         ),
                         TextFormField(
-                          maxLength: 6,
-                          obscureText: _isObscure,
-                          keyboardType: TextInputType.number,
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(
                                 RegExp(r'\s')), // Mengabaikan spasi
                           ],
                           controller: username,
                           decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                                icon: Icon(_isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
-                                onPressed: () {
-                                  setState(() {
-                                    _isObscure = !_isObscure;
-                                  });
-                                }),
                             border: OutlineInputBorder(), // Set border here
                           ),
                         ),
@@ -111,16 +106,15 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                           height: 1.5.h,
                         ),
                         Text(
-                          'Masukan Pin Kembali :',
+                          'Password :',
                           style: TextStyle(fontSize: 15),
                         ),
                         SizedBox(
                           height: 1.5.h,
                         ),
                         TextFormField(
-                          maxLength: 6,
                           obscureText: _isObscure2,
-                          keyboardType: TextInputType.number,
+
                           inputFormatters: [
                             FilteringTextInputFormatter.deny(
                                 RegExp(r'\s')), // Mengabaikan spasi
@@ -169,30 +163,43 @@ class _RegisterPageState2 extends State<RegisterPage2> {
                                 String nohp = widget.nohp;
                                 String norek = widget.norek;
 
-                                String pesanerror = '';
-                                if (username_.isEmpty || password_.isEmpty) {
-                                  pesanerror = 'ada data yang belum di isi';
-                                }
+                                bool containsNumberUser =
+                                    containsNumber(username_);
+                                bool containsNumberPass =
+                                    containsNumber(password_);
 
-                                if (pesanerror == '') {
-                                  if (username.text != password.text) {
-                                    EasyLoading.showError(
-                                        'Pin tidak sama, pastikan pin yang kamu buat sama');
+                                if (containsNumberUser == true &&
+                                    containsNumberPass == true) {
+                                  if (username_.length >= 8 &&
+                                      password_.length >= 8) {
+                                    String pesanerror = '';
+                                    if (username_.isEmpty ||
+                                        password_.isEmpty) {
+                                      pesanerror = 'ada data yang belum di isi';
+                                    }
+
+                                    if (pesanerror == '') {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  KonfirmasiRegister(
+                                                    username: username_,
+                                                    password: password_,
+                                                    norek: norek,
+                                                    nohp: nohp,
+                                                    nik: nik,
+                                                  )));
+                                    } else {
+                                      EasyLoading.showError(pesanerror);
+                                    }
                                   } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                KonfirmasiRegister(
-                                                  username: username_,
-                                                  password: password_,
-                                                  norek: norek,
-                                                  nohp: nohp,
-                                                  nik: nik,
-                                                )));
+                                    EasyLoading.showInfo(
+                                        'Minimal Panjang username dan password 8 huruf dan kombinasi angka s');
                                   }
                                 } else {
-                                  EasyLoading.showError(pesanerror);
+                                  EasyLoading.showInfo(
+                                      'Minimal Panjang username dan password 8 huruf dan kombinasi angka');
                                 }
                               },
                               child: Text('Selanjutnya',

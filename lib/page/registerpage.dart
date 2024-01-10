@@ -34,7 +34,13 @@ class _RegisterPageState extends State<RegisterPage> {
           print('ada');
           dataAkun = true;
           // Proses data jika ditemukan
-
+          EasyLoading.showInfo(
+              duration: Duration(seconds: 10),
+              dismissOnTap: true,
+              'Data nik ini sudah terdaftar, Hubungi Seles, atau kunjungi kantor KSP Warna Artha, untuk info lebih lanjut hubungi (021) 5315 7264');
+          return {'success': true, 'data': data};
+        } else {
+          dataAkun = false;
           Navigator.push(
               context,
               MaterialPageRoute(
@@ -43,9 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
                         nohp: nohp_,
                         norek: norek_,
                       )));
-          return {'success': true, 'data': data};
-        } else {
-          dataAkun = false;
           print('tidak ada');
           // Handle situasi jika status tidak sesuai atau pesan tidak sesuai
           return {'success': false, 'data': data};
@@ -131,6 +134,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             height: 1.5.h,
                           ),
                           TextFormField(
+                            maxLength: 15,
                             keyboardType: TextInputType.number,
                             controller: norek,
                             decoration: InputDecoration(
@@ -150,6 +154,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           TextFormField(
                             keyboardType: TextInputType.number,
                             controller: nik,
+                            maxLength: 16,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(), // Set border here
                             ),
@@ -171,8 +176,10 @@ class _RegisterPageState extends State<RegisterPage> {
                               border: OutlineInputBorder(), // Set border here
                             ),
                           ),
+                          Text(
+                              'No Hp minimal 10 angka dan diawali dengan angka 0',style: TextStyle(fontSize: 10),),
                           SizedBox(
-                            height: 2.5.h,
+                            height: 1.2.h,
                           ),
                           Row(
                             children: [
@@ -205,6 +212,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                   // await getUserData(
                                   //     nik_, 'a3402327bd7823c778cee59533a2ceb5');
 
+                                  if (nohp_.length >= 10) {
+                                    print('ok');
+                                  } else {
+                                    pesanerror = 'no hp';
+                                  }
+
+                                  if (nik_.length == 16) {
+                                    print('ok');
+                                  } else {
+                                    pesanerror = 'nik';
+                                  }
+
+                                  if (norek_.length == 15) {
+                                    print('ok');
+                                  } else {
+                                    pesanerror = 'norek';
+                                  }
+
                                   if (pesanerror == '') {
                                     await getUserData(
                                         nik_,
@@ -212,8 +237,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                         nik_,
                                         nohp_,
                                         norek_);
+                                    print('data ok');
                                   } else {
-                                    EasyLoading.showError(pesanerror);
+                                    EasyLoading.showError(
+                                        'ada data yang belum sesuai');
                                   }
                                 },
                                 child: Text(
@@ -223,20 +250,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.green),
                               ),
-                              ElevatedButton(
-                                  onPressed: () async {
-                                    // await getUserData('3671123009860002',
-                                    //     'a3402327bd7823c778cee59533a2ceb5');
-                                  },
-                                  child: Text('test')),
                             ],
                           ),
-                          ElevatedButton(
-                              onPressed: () async {
-                                // await getUserData('3671123009860s002',
-                                //     'a3402327bd7823c778cee59533a2ceb5');
-                              },
-                              child: Text('tesss'))
                         ]),
                   ),
                 ),
