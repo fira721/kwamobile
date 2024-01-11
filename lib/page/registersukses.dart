@@ -3,6 +3,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwamobile/page/loginpage.dart';
+import 'package:kwamobile/page/loginpage2.dart';
 import 'package:sizer/sizer.dart';
 
 class RegisterSukses extends StatefulWidget {
@@ -86,11 +87,15 @@ class _RegisterSuksesState extends State<RegisterSukses> {
                               Navigator.pushAndRemoveUntil(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
+                                      builder: (context) => LoginPage2()),
                                   (route) => false);
                             },
-                            style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                            child: Text('Login', style: TextStyle(color: Colors.white),)),
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.green),
+                            child: Text(
+                              'Login',
+                              style: TextStyle(color: Colors.white),
+                            )),
                       ]),
                 ),
               ]),

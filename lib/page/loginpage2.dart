@@ -346,7 +346,7 @@ class _LoginPage2State extends State<LoginPage2> {
                                 TextButton(
                                     onPressed: () async {
                                       EasyLoading.showInfo(
-                                        duration: Duration(seconds: 10),
+                                          duration: Duration(seconds: 10),
                                           'hubungi kolektor kami atau kunjungi kantor KSP Warna Artha, untuk aktivasi akun kembali info lebih lanjut hubungi (021) 5315 7264');
                                     },
                                     child: Text(
