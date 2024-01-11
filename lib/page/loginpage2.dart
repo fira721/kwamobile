@@ -31,12 +31,24 @@ class _LoginPage2State extends State<LoginPage2> {
 
   bool munculregister = true;
 
-  Future<bool> checkInternetConnection() async {
+  bool koneksi = true;
+
+  Future<void> checkInternetConnection() async {
     try {
       final response = await http.get(Uri.parse("https://www.google.com"));
-      return response.statusCode == 200;
+      koneksi = true;
     } catch (e) {
-      return false;
+      koneksi = false;
+    }
+  }
+
+  Future<void> gotoffline() async {
+    await checkInternetConnection();
+    if (koneksi == false) {
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => OfflinePage()),
+          (route) => false);
     }
   }
 
@@ -158,19 +170,13 @@ class _LoginPage2State extends State<LoginPage2> {
   }
 
   @override
-  void initState() async {
-    bool isConnected = await checkInternetConnection();
-
-    if (isConnected) {
-      print('Internet connection is available.');
-    } else {
-      Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => OfflinePage()),
-          (route) => false);
-    }
+  void initState() {
+    EasyLoading.show();
+    gotoffline();
     getdata();
+    EasyLoading.dismiss();
 
+    // TODO: implement initState
     super.initState();
   }
 
@@ -339,14 +345,9 @@ class _LoginPage2State extends State<LoginPage2> {
                                 ),
                                 TextButton(
                                     onPressed: () async {
-                                      nik = await getData(token, code);
-                                      if (nik != null) {
-                                        print('data1'); // nothing tetap login
-                                      } else {
-                                        print(
-                                            'data2'); // jika data dua null daftar baru dan
-                                      }
-                                      print(nik);
+                                      EasyLoading.showInfo(
+                                        duration: Duration(seconds: 10),
+                                          'hubungi kolektor kami atau kunjungi kantor KSP Warna Artha, untuk aktivasi akun kembali info lebih lanjut hubungi (021) 5315 7264');
                                     },
                                     child: Text(
                                       'Lupa Password?',

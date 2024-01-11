@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive/hive.dart';
-import 'package:kwamobile/page/loginpage.dart';
 import 'package:kwamobile/page/loginpage2.dart';
-import 'package:kwamobile/page/welcomepage.dart';
 import 'package:sizer/sizer.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:http/http.dart' as http;
 
 
 

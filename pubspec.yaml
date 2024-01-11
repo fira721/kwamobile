@@ -32,7 +32,6 @@ dependencies:
   carousel_slider: ^4.2.1
   cupertino_icons: ^1.0.2
   device_info_plus: ^9.1.1
-  device_information: ^0.0.4
   dio: ^5.4.0
   flutter:
     sdk: flutter
@@ -74,6 +73,10 @@ flutter:
     - lib/assets/image/kkb.png
     - lib/assets/image/kwa.png
     - lib/assets/image/kkw.png
+    - lib/assets/image/slide1.png
+    - lib/assets/image/slide2.png
+    - lib/assets/image/slide3.png
+    - lib/assets/image/slide4.png
   #   - images/a_dot_ham.jpeg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

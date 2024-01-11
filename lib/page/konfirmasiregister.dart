@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:device_info_plus/device_info_plus.dart';
-import 'package:device_information/device_information.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -114,27 +113,6 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
 
   TextEditingController username = TextEditingController();
   TextEditingController password = TextEditingController();
-
-  Future<void> getidhp() async {
-    await Hive.initFlutter();
-    var datalocal = await Hive.openBox('datalocal');
-    String deviceModel = '';
-    int apiLevel = 0;
-    String idhp = '';
-    try {
-      deviceModel = await DeviceInformation.deviceModel;
-      idhp = await DeviceInformation.deviceManufacturer;
-      apiLevel = await DeviceInformation.apiLevel;
-    } on PlatformException {
-      deviceModel = 'Failed to get platform version.';
-    }
-
-    String idhptest = deviceModel + idhp + apiLevel.toString();
-
-    await datalocal.put('idhp', idhptest);
-    String datafromhive = datalocal.get('idhp');
-    // deviceModel + idhp + apiLevel.toString();
-  }
 
   Future<void> registerAccount(
     String code,
@@ -303,10 +281,10 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                               onPressed: () async {
                                 try {
                                   EasyLoading.show();
-                                  await getidhp();
+
                                   var datalocal =
                                       await Hive.openBox('datalocal');
-                                  String idhp = datalocal.get('idhp');
+                                  String idhp = 'no id';
                                   String username = calculateMD5(
                                       'Pinh27@))*${widget.username}');
                                   String password = calculateMD5(

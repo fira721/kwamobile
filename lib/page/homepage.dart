@@ -5,16 +5,25 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwamobile/page/listpage.dart';
 import 'package:kwamobile/page/pengajuanpage.dart';
-import 'package:kwamobile/page/registerpage2.dart';
 import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
 
 final List<String> imgList = [
-  'http://ksp-warnaartha.co.id/kwamobile/slide1.png',
-  'http://ksp-warnaartha.co.id/kwamobile/slide2.png',
-  'http://ksp-warnaartha.co.id/kwamobile/slide3.png',
-  'http://ksp-warnaartha.co.id/kwamobile/slide4.png',
+  'lib/assets/image/slide1.png',
+  'lib/assets/image/slide2.png',
+  'lib/assets/image/slide3.png',
+  'lib/assets/image/slide4.png',
 ];
+
+// final List<String> imgList = [
+//   'lib/assets/image/slide1.png',
+//   'lib/assets/image/slide1.png',
+//   'lib/assets/image/slide1.png',
+//   'lib/assets/image/slide1.png',
+//   'http://ksp-warnaartha.co.id/kwamobile/slide2.png',
+//   'http://ksp-warnaartha.co.id/kwamobile/slide3.png',
+//   'http://ksp-warnaartha.co.id/kwamobile/slide4.png',
+// ];
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.name});
@@ -78,7 +87,7 @@ class _HomePageState extends State<HomePage> {
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   child: Stack(
                     children: <Widget>[
-                      Image.network(item, fit: BoxFit.cover, width: 1000.0),
+                      Image.asset(item, fit: BoxFit.cover, width: 1000.0),
                       Positioned(
                         bottom: 0.0,
                         left: 0.0,

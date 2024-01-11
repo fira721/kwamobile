@@ -37,7 +37,7 @@ class _RegisterPageState extends State<RegisterPage> {
           EasyLoading.showInfo(
               duration: Duration(seconds: 10),
               dismissOnTap: true,
-              'Data nik ini sudah terdaftar, Hubungi Seles, atau kunjungi kantor KSP Warna Artha, untuk info lebih lanjut hubungi (021) 5315 7264');
+              'Data nik ini sudah terdaftar, hubungi kolektor kami atau kunjungi kantor KSP Warna Artha, untuk aktivasi akun kembali info lebih lanjut hubungi (021) 5315 7264');
           return {'success': true, 'data': data};
         } else {
           dataAkun = false;
@@ -177,7 +177,9 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                           ),
                           Text(
-                              'No Hp minimal 10 angka dan diawali dengan angka 0',style: TextStyle(fontSize: 10),),
+                            'No Hp minimal 10 angka dan diawali dengan angka 0',
+                            style: TextStyle(fontSize: 10),
+                          ),
                           SizedBox(
                             height: 1.2.h,
                           ),
