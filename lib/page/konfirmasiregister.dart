@@ -81,7 +81,7 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
 
   bool validasirequest = false;
 
-  Future<void> validasiNik(String cif_, String nik_) async {
+  Future<void> validasiNik(String cif_, String nik_, String nohp_) async {
     // Ganti URL API dengan URL yang sesuai
     final apiUrl = 'http://ksp-warnaartha.co.id/kwamobile/get_checkdata.php';
 
@@ -89,9 +89,10 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
     final apiKey = 'a3402327bd7823c778cee59533a2ceb5';
     final cif = cif_;
     final nik = nik_;
+    final nohp = nohp_;
 
     final response = await http.get(
-      Uri.parse('$apiUrl?api_key=$apiKey&cif=$cif&nik=$nik'),
+      Uri.parse('$apiUrl?api_key=$apiKey&cif=$cif&nik=$nik&nohp=$nohp'),
     );
 
     if (response.statusCode == 200) {
@@ -297,7 +298,7 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                                       'Kspkwa@))*Bidexh27@))*Kspksph27@))*');
                                   await get_dataCif(norek);
 
-                                  await validasiNik(nasabahCode, nik);
+                                  await validasiNik(nasabahCode, nik, nohp);
 
                                   if (validasirequest == true) {
                                     try {
@@ -335,7 +336,9 @@ class _KonfirmasiRegisterPageState extends State<KonfirmasiRegister> {
                                     }
                                   } else {
                                     EasyLoading.showError(
-                                        'Data No Rekening tabugnan atau nik tidak sesuai');
+                                        'Data No Rekening tabungan/Nik/No Handphone tidak sesuai, harap hubungi kolektor/seles KSP Warna Artha untuk informasi lebih lanjut',
+                                        dismissOnTap: true,
+                                        duration: Duration(seconds: 15));
                                     EasyLoading.dismiss();
                                   }
                                 } catch (e) {}

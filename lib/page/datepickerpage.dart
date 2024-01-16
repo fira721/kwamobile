@@ -20,13 +20,18 @@ class _DatePickerDateState extends State<DatePickerDate> {
     super.initState();
   }
 
+  String formatDateString(String inputDateString) {
+    DateTime dateTime = DateFormat('d MMMM y', 'id').parse(inputDateString);
+    return DateFormat('yyyy-MM-dd').format(dateTime);
+  }
+
   String Tanggal1 = '';
   String Tanggal2 = '';
 
   void formatdateawal() {
     setState(() {
-      Tanggal1 = DateFormat('yyyy-MM-dd').format(_selectedDate);
-      Tanggal2 = DateFormat('yyyy-MM-dd').format(_selectedDate2);
+      Tanggal1 = DateFormat("dd MMMM yyyy", "id_ID").format(_selectedDate);
+      Tanggal2 = DateFormat("dd MMMM yyyy", "id_ID").format(_selectedDate2);
     });
   }
 
@@ -50,9 +55,9 @@ class _DatePickerDateState extends State<DatePickerDate> {
         _selectedDate = picked;
         String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
         _selectedDate2 = _selectedDate;
-        Tanggal1 = formattedDate;
+        Tanggal1 = DateFormat("dd MMMM yyyy", "id_ID").format(_selectedDate);
         String formattedDate2 = DateFormat('yyyy-MM-dd').format(_selectedDate2);
-        Tanggal2 = formattedDate2;
+        Tanggal2 = DateFormat("dd MMMM yyyy", "id_ID").format(_selectedDate2);
         print(formattedDate);
       });
     }
@@ -72,7 +77,7 @@ class _DatePickerDateState extends State<DatePickerDate> {
       setState(() {
         _selectedDate2 = picked;
         String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate2);
-        Tanggal2 = formattedDate;
+        Tanggal2 = DateFormat("dd MMMM yyyy", "id_ID").format(_selectedDate2);
         print(formattedDate);
       });
     }
@@ -81,6 +86,7 @@ class _DatePickerDateState extends State<DatePickerDate> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.green[50],
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
         title: Text(
@@ -90,45 +96,61 @@ class _DatePickerDateState extends State<DatePickerDate> {
         backgroundColor: Colors.green,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          SizedBox(
-            height: 5.h,
-          ),
-          Row(
-            children: [
-              Text(
-                'Cek Transaksi Rekening : ',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              Text(
-                '${widget.nomorrekening}',
-                style: TextStyle(
-                    color: Colors.green,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16),
+        padding: const EdgeInsets.all(12.0),
+        child: Container(
+          padding: EdgeInsets.all(10),
+          height: 45.h,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(15),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.6),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: Offset(0, 3),
               ),
             ],
           ),
-          SizedBox(
-            height: 3.h,
-          ),
-          Row(children: [
-            Text(
-              'Dari Tanggal       :    ',
-              style: TextStyle(fontSize: 16),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            SizedBox(
+              height: 5.h,
             ),
-            Text(
-              Tanggal1.toString(),
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green),
+            Row(
+              children: [
+                Text(
+                  'Cek Transaksi Rekening : ',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Text(
+                  '${widget.nomorrekening}',
+                  style: TextStyle(
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16),
+                ),
+              ],
             ),
             SizedBox(
-              width: 5.w,
+              height: 3.h,
             ),
-            ElevatedButton(
+            Row(children: [
+              Text(
+                'Dari Tanggal       :    ',
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                Tanggal1.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green),
+              ),
+              SizedBox(
+                width: 1.w,
+              ),
+              IconButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -136,27 +158,31 @@ class _DatePickerDateState extends State<DatePickerDate> {
                   _selectDate(context);
                   print(_selectedDate);
                 },
-                child: Text(
-                  'Pilih Tanggal',
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                ))
-          ]),
-          Row(children: [
-            Text(
-              'Sampai Tanggal :    ',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              Tanggal2.toString(),
-              style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green),
-            ),
+                icon: Icon(
+                  Icons.date_range,
+                  color: Colors.white,
+                ),
+              )
+            ]),
             SizedBox(
-              width: 5.w,
+              height: 2.h,
             ),
-            ElevatedButton(
+            Row(children: [
+              Text(
+                'Sampai Tanggal :    ',
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                Tanggal2.toString(),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green),
+              ),
+              SizedBox(
+                width: 1.w,
+              ),
+              IconButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.green,
                 ),
@@ -164,46 +190,52 @@ class _DatePickerDateState extends State<DatePickerDate> {
                   _selectDate2(context);
                   print(_selectedDate);
                 },
-                child: Text(
-                  'Pilih Tanggal',
-                  style: TextStyle(color: Colors.white, fontSize: 10),
-                )),
-          ]),
-          Container(
-            alignment: Alignment.centerLeft,
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => RiwayatTransaksiPage(
-                                startdate: Tanggal1,
-                                enddate: Tanggal2,
-                                norek: widget.nomorrekening,
-                                token: widget.token)));
-                  },
-                  style:
-                      ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                  child: Text(
-                    'Cek Transaksi',
-                    style: TextStyle(color: Colors.white),
-                  )),
-              SizedBox(
-                height: 10,
-              ),
-              Text(
-                'Periode mutasi yang dapat dipilih 7 hari',
-                style: TextStyle(color: Colors.grey[600], fontSize: 11),
-              ),
-              Text(
-                'Mutasi rekening maksimum 31 hari yang lalu',
-                style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                icon: Icon(
+                  Icons.date_range,
+                  color: Colors.white,
+                ),
               ),
             ]),
-          ),
-        ]),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ElevatedButton(
+                        onPressed: () async { 
+                           String formattedDate1 = formatDateString(Tanggal1);
+                           String formattedDate2 = formatDateString(Tanggal2);
+
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => RiwayatTransaksiPage(
+                                      startdate: formattedDate1,
+                                      enddate: formattedDate2,
+                                      norek: widget.nomorrekening,
+                                      token: widget.token)));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green),
+                        child: Text(
+                          'Cek Transaksi',
+                          style: TextStyle(color: Colors.white),
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      'Periode mutasi yang dapat dipilih 7 hari',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                    ),
+                    Text(
+                      'Mutasi rekening maksimum 31 hari yang lalu',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 11),
+                    ),
+                  ]),
+            ),
+          ]),
+        ),
       ),
     );
   }

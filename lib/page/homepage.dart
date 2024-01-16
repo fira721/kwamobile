@@ -4,9 +4,11 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:kwamobile/page/listpage.dart';
+import 'package:kwamobile/page/listpengaturan.dart';
 import 'package:kwamobile/page/pengajuanpage.dart';
 import 'package:sizer/sizer.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 final List<String> imgList = [
   'lib/assets/image/slide1.png',
@@ -35,6 +37,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   DateTime _selectedDate = DateTime.now();
+
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -306,7 +310,9 @@ class _HomePageState extends State<HomePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => PengajuanOnline()));
+                          builder: (context) => PengajuanOnline(
+                                name: widget.name,
+                              )));
                 },
                 child: Container(
                   padding: EdgeInsets.all(8),
@@ -350,7 +356,9 @@ class _HomePageState extends State<HomePage> {
             alignment: Alignment.centerLeft,
             child: Column(children: [
               InkWell(
-                onTap: () {},
+                onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => ListPengaturan()));
+                },
                 child: Container(
                   padding: EdgeInsets.all(8),
                   child: Row(children: [

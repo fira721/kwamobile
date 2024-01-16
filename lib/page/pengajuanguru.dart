@@ -9,25 +9,22 @@ import 'package:kwamobile/page/konfirmasipengajuan.dart';
 import 'package:sizer/sizer.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 
-class PengajuanLoanJaminan extends StatefulWidget {
-  PengajuanLoanJaminan(
+class PengajuanGuru extends StatefulWidget {
+  const PengajuanGuru(
       {super.key,
       required this.jenispinjaman,
       required this.jaminan,
-      required this.nama});
+      required this.name});
 
   final String jenispinjaman;
   final bool jaminan;
-  final String nama;
-
+  final String name;
   @override
-  State<PengajuanLoanJaminan> createState() => _PengajuanLoanJaminanState();
+  State<PengajuanGuru> createState() => _PengajuanGuruState();
 }
 
-class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
+class _PengajuanGuruState extends State<PengajuanGuru> {
   Future<void> postPengajuanData(
-
-
       String apiToken,
       String nama,
       String cif,
@@ -68,21 +65,32 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         print(responseData);
-
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => KonfirmasiPengajuan()));
       } else {
-        EasyLoading.showError('Error : Semua data harus di isi');
+        EasyLoading.showError('Ada data yang belum di isi');
+
         print('Request failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
     } catch (error) {
-       EasyLoading.showError('Error : Semua data harus di isi');
+      EasyLoading.showError('Ada data yang belum di isi');
       print('Error: $error');
     }
   }
 
+  @override
+  void initState() {
+    Hive.initFlutter();
+
+    super.initState();
+  }
+
   double _value = 0.0;
+
+  TextEditingController pekerjaan = TextEditingController();
+  TextEditingController tempatkerja = TextEditingController();
+  TextEditingController nohp = TextEditingController();
 
   String valuejaminan = 'Sertifikat Tanah/Bangunan';
 
@@ -101,10 +109,6 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
     "Biaya Renovasi",
     "Pembelian Barang",
   ];
-
-  TextEditingController keteranganJaminan = TextEditingController();
-  TextEditingController pekerjaan = TextEditingController();
-  TextEditingController nohp = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -245,7 +249,6 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
                             ),
                             Text('Keterangan jaminan :'),
                             TextFormField(
-                              controller: keteranganJaminan,
                               decoration: InputDecoration(
                                 fillColor: Colors.green,
                                 focusColor: Colors.green,
@@ -260,12 +263,30 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
                       SizedBox(
                         height: 1.h,
                       ),
-                      Text('Pekerjaan/Usaha :'),
+                      Text('Pekerjaan :'),
                       SizedBox(
                         height: 1.h,
                       ),
                       TextFormField(
                         controller: pekerjaan,
+                        decoration: InputDecoration(
+                          fillColor: Colors.green,
+                          focusColor: Colors.green,
+                          border: OutlineInputBorder(), // Set border here
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Text('Tempat Sekolah/Dinas Bekerja :'),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      TextFormField(
+                        controller: tempatkerja,
                         decoration: InputDecoration(
                           fillColor: Colors.green,
                           focusColor: Colors.green,
@@ -305,9 +326,9 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
                             //     "Description of Jaminan",
                             //     "Engineer",
                             //     "1234567890",
-                            //     "Cabang");
+                            //     "Cabang",
+                            //     "-");
                             EasyLoading.show();
-
                             await Hive.initFlutter();
                             var datalocal = await Hive.openBox('datalocal');
                             String cif = datalocal.get('cif');
@@ -319,18 +340,18 @@ class _PengajuanLoanJaminanState extends State<PengajuanLoanJaminan> {
 
                             await postPengajuanData(
                                 "a3402327bd7823c778cee59533a2ceb5",
-                                widget.nama,
+                                widget.name,
                                 cif,
                                 widget.jenispinjaman,
                                 _value.toInt(),
                                 valuetujuan,
-                                valuejaminan,
-                                keteranganJaminan.text,
+                                "-",
+                                "-",
                                 pekerjaan.text,
                                 nohp.text,
                                 kodecabang,
-                                "-");
-                                EasyLoading.dismiss();
+                                "tempat kerja : ${tempatkerja.text}");
+                            EasyLoading.dismiss();
                           },
                           child: Text(
                             'Kirim Pengajuan',

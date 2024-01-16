@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:sizer/sizer.dart';
 
-class KonfirmasiPengajuan extends StatefulWidget {
-  const KonfirmasiPengajuan({super.key});
+class KonfirmasiPassword extends StatefulWidget {
+  const KonfirmasiPassword({super.key});
 
   @override
-  State<KonfirmasiPengajuan> createState() => _KonfirmasiPengajuanState();
+  State<KonfirmasiPassword> createState() => _KonfirmasiPasswordState();
 }
 
-class _KonfirmasiPengajuanState extends State<KonfirmasiPengajuan> {
+class _KonfirmasiPasswordState extends State<KonfirmasiPassword> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Pengajuan Sukses',
+          'Pergantian Password',
           style: TextStyle(color: Colors.white),
         ),
         backgroundColor: Colors.green,
@@ -34,7 +35,7 @@ class _KonfirmasiPengajuanState extends State<KonfirmasiPengajuan> {
               size: 90.sp,
             ),
             Text(
-              'Pengajuan Terkirim',
+              'Pergantian Password Anda Berhasil',
               style: TextStyle(
                   color: Colors.green,
                   fontWeight: FontWeight.bold,
@@ -43,17 +44,19 @@ class _KonfirmasiPengajuanState extends State<KonfirmasiPengajuan> {
             SizedBox(
               height: 2.h,
             ),
-            Text(
-                'Pengajuan anda telah kami terima, Seles kami akan segera menghubungi anda.'),
+            Text('Anda sudah bisa login menggunakan password baru.'),
             SizedBox(
               height: 3.h,
             ),
             ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  SystemNavigator.pop();
                 },
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.orange),
-                child: Text('Kembali', style: TextStyle(color: Colors.white),))
+                child: Text(
+                  'Kembali',
+                  style: TextStyle(color: Colors.white),
+                ))
           ],
         )),
       ),

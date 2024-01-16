@@ -71,7 +71,7 @@ class _LoginPage2State extends State<LoginPage2> {
     await Hive.initFlutter();
     var datalocal = await Hive.openBox('datalocal');
     // String id = datalocal.get('idhp');
-    // String cif = datalocal.get('cif')\
+    // String cif = datalocal.get('cif');
     try {
       code = datalocal.get('cif');
       token = datalocal.get('token');
@@ -90,6 +90,7 @@ class _LoginPage2State extends State<LoginPage2> {
     EasyLoading.dismiss();
     print(token);
   }
+    bool _isObscure2 = true;
 
   String? nik = '';
   Future<String?> getData(String token, String code) async {
@@ -308,14 +309,24 @@ class _LoginPage2State extends State<LoginPage2> {
                               height: 1.h,
                             ),
                             TextFormField(
+
                               inputFormatters: [
                                 FilteringTextInputFormatter.deny(
                                     RegExp(r'\s')), // Mengabaikan spasi
                               ],
                               controller: passwordController,
-                              obscureText: true,
+                             obscureText: _isObscure2,
                               // maxLength: 10,
                               decoration: InputDecoration(
+                                 suffixIcon: IconButton(
+                                icon: Icon(_isObscure2
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    _isObscure2 = !_isObscure2;
+                                  });
+                                }),
                                 fillColor: Colors.white,
                                 filled: true, // dont forget
                                 border: OutlineInputBorder(), // Set border here

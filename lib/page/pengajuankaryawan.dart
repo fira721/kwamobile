@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:kwamobile/page/konfirmasipengajuan.dart';
@@ -9,10 +11,14 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 
 class PengajuanKaryawan extends StatefulWidget {
   const PengajuanKaryawan(
-      {super.key, required this.jenispinjaman, required this.jaminan});
+      {super.key,
+      required this.jenispinjaman,
+      required this.jaminan,
+      required this.name});
 
   final String jenispinjaman;
   final bool jaminan;
+  final String name;
   @override
   State<PengajuanKaryawan> createState() => _PengajuanKaryawanState();
 }
@@ -59,16 +65,32 @@ class _PengajuanKaryawanState extends State<PengajuanKaryawan> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         print(responseData);
+        Navigator.push(context,
+            MaterialPageRoute(builder: (context) => KonfirmasiPengajuan()));
       } else {
+        EasyLoading.showError('Ada data yang belum di isi');
+
         print('Request failed with status: ${response.statusCode}');
         print('Response body: ${response.body}');
       }
     } catch (error) {
+      EasyLoading.showError('Ada data yang belum di isi');
       print('Error: $error');
     }
   }
 
+  @override
+  void initState() {
+    Hive.initFlutter();
+
+    super.initState();
+  }
+
   double _value = 0.0;
+
+  TextEditingController pekerjaan = TextEditingController();
+  TextEditingController tempatkerja = TextEditingController();
+  TextEditingController nohp = TextEditingController();
 
   String valuejaminan = 'Sertifikat Tanah/Bangunan';
 
@@ -246,6 +268,25 @@ class _PengajuanKaryawanState extends State<PengajuanKaryawan> {
                         height: 1.h,
                       ),
                       TextFormField(
+                        controller: pekerjaan,
+                        decoration: InputDecoration(
+                          fillColor: Colors.green,
+                          focusColor: Colors.green,
+                          border: OutlineInputBorder(), // Set border here
+                        ),
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      Text('Tempat Bekerja :'),
+                      SizedBox(
+                        height: 1.h,
+                      ),
+                      TextFormField(
+                        controller: tempatkerja,
                         decoration: InputDecoration(
                           fillColor: Colors.green,
                           focusColor: Colors.green,
@@ -260,6 +301,7 @@ class _PengajuanKaryawanState extends State<PengajuanKaryawan> {
                         height: 1.h,
                       ),
                       TextFormField(
+                        controller: nohp,
                         decoration: InputDecoration(
                           fillColor: Colors.green,
                           focusColor: Colors.green,
@@ -273,24 +315,43 @@ class _PengajuanKaryawanState extends State<PengajuanKaryawan> {
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
                           onPressed: () async {
+                            // await postPengajuanData(
+                            //     "a3402327bd7823c778cee59533a2ceb5",
+                            //     "John Doe",
+                            //     "12345",
+                            //     'KWA',
+                            //     10000,
+                            //     "Business",
+                            //     "Gold",
+                            //     "Description of Jaminan",
+                            //     "Engineer",
+                            //     "1234567890",
+                            //     "Cabang",
+                            //     "-");
+                            EasyLoading.show();
+                            await Hive.initFlutter();
+                            var datalocal = await Hive.openBox('datalocal');
+                            String cif = datalocal.get('cif');
+
+                            String cabang = cif;
+
+                            // Mengambil tiga huruf pertama
+                            String kodecabang = cif.substring(0, 3);
+
                             await postPengajuanData(
                                 "a3402327bd7823c778cee59533a2ceb5",
-                                "John Doe",
-                                "12345",
-                                'KWA',
-                                10000,
-                                "Business",
-                                "Gold",
-                                "Description of Jaminan",
-                                "Engineer",
-                                "1234567890",
-                                "Cabang",
-                                "keteranagan");
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        KonfirmasiPengajuan()));
+                                widget.name,
+                                cif,
+                                widget.jenispinjaman,
+                                _value.toInt(),
+                                valuetujuan,
+                                "-",
+                                "-",
+                                pekerjaan.text,
+                                nohp.text,
+                                kodecabang,
+                                "tempat kerja : ${tempatkerja.text}");
+                            EasyLoading.dismiss();
                           },
                           child: Text(
                             'Kirim Pengajuan',
